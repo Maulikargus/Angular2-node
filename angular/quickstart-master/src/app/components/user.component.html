@@ -1,0 +1,39 @@
+<link rel="stylesheet" type="text/css" href="chat.css" />
+  <div >
+    <div *ngIf="show" >
+      <input [(ngModel)]="message" /><button (click)="logIn(message)">Click</button>
+      {{message}}
+    </div>
+      <div>
+        <h3>{{name}}</h3>
+      </div>
+    </div>
+    <div *ngIf="!show" >
+      <div>
+        <div class="chat-sidebar">
+          <h3>Online users</h3>
+          <div class="sidebar-name">
+              <p *ngFor="let user of users">
+                <i style="color:green">&#10036;</i>
+                <img src="https://i.imgur.com/DY6gND0.png" />
+                  <span>{{user}}</span>
+              </p>
+          </div>
+      
+      </div>
+      </div>
+    <div style="width:80%;">
+      <ol class="chat" *ngFor="let message of messages" >
+        <li [ngClass]="{'self': message.from==name, 'other': message.from!=name}">
+            <div class="avatar"><img src="https://i.imgur.com/DY6gND0.png" draggable="false"/></div>
+          <div class="msg">
+            <p><b>{{message.from}}</b></p>
+            <p>{{message.message}}</p>
+            <time>{{message.time}}</time>
+          </div>
+        </li>
+        </ol>
+        <input class="textarea" [(ngModel)]="textmsg" type="text" placeholder="Type here!"/><div class="emojis"></div>
+        <button class="send" (click)="send(textmsg)" >send</button>
+      </div>
+      </div>
