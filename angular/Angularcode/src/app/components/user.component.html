@@ -1,29 +1,59 @@
 <link rel="stylesheet" type="text/css" href="chat.css" />
-  <div >
-    <div *ngIf="show" >
-      <input [(ngModel)]="message" /><button (click)="logIn(message)">Click</button>
-      {{message}}
+<link rel="stylesheet" type="text/css" href="login.css" />
+<script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+
+<div *ngIf="show" class="login-page">
+    <div class="form">
+      <form (ngSubmit)="registerfun(registername.value,registerpassword.value)" id="register-form" *ngIf="register">
+        <input type="text" #registername placeholder="name" required/>
+        <input type="password" #registerpassword placeholder="password" required/>
+        <button type="submit" >create</button>
+
+        <p class="message">Already registered? <a (click)="toggle()" href="#">Sign In</a></p>
+      </form>
+      <form class="login-form"  *ngIf="login" (ngSubmit)="loginfun(loginname.value,loginpassword.value)" >
+        <input type="text" #loginname placeholder="username"/>
+        <input type="password" #loginpassword placeholder="password"/>
+        <button>login</button>
+        <p class="message">Not registered? <a (click)="toggle()" href="#">Create an account</a></p>
+      </form>
+        <p style="color:red"> {{error}}</p>
     </div>
+  </div>
+
+<div *ngIf="loggedin" [ngClass]="{lowopacity:popup}">
+<div >
       <div>
         <h3>{{name}}</h3>
       </div>
     </div>
     <div *ngIf="!show" >
       <div>
+    <label class="label"><p><img class="imgs" [src]="src"  /><span >   <b>{{current_user}}{{current_grp}}</b></span></p></label>
+    <img class="bigimg top" (click)='popupcreategrp()'  src="http://www.iconarchive.com/download/i80209/custom-icon-design/flatastic-1/add-1.ico" />
+      </div>
+    <div>
         <div class="chat-sidebar">
           <h3>Online users</h3>
           <div class="sidebar-name">
-              <p *ngFor="let user of users">
-                <i style="color:green">&#10036;</i>
-                <img src="https://i.imgur.com/DY6gND0.png" />
-                  <span>{{user}}</span>
+              <p *ngFor="let user of users" (click)="changeUser(user)" class="ex2">
+                <span style="cursor:pointer;color:aqua" >&#10036;</span>
+                <img style="cursor:pointer" src="https://i.imgur.com/DY6gND0.png" />
+                  <span style="cursor:pointer">{{user}}</span>
+                
+                </p>
+              <p *ngFor="let grp of Groups" (click)="changeGrp(grp.name)" class="ex2" >
+                  <span style="cursor:pointer;color:aqua" >&#10036;</span>
+                  <img style="cursor:pointer" src="http://millenniumholidays.com/images/client-group.png" />
+                    <span style="cursor:pointer">{{grp.name}}</span>
               </p>
           </div>
       
       </div>
       </div>
-    <div style="width:80%;">
-      <ol class="chat" *ngFor="let message of messages" >
+
+    <div style="width:80%;" scroll-glue>
+      <ol  class="chat" *ngFor="let message of messages" >
         <li [ngClass]="{'self': message.from==name, 'other': message.from!=name}">
             <div class="avatar"><img src="https://i.imgur.com/DY6gND0.png" draggable="false"/></div>
           <div class="msg">
@@ -33,7 +63,26 @@
           </div>
         </li>
         </ol>
-        <input class="textarea" [(ngModel)]="textmsg" type="text" placeholder="Type here!"/><div class="emojis"></div>
-        <button class="send" (click)="send(textmsg)" >send</button>
+        <input (keyup.enter)="send(textmsg)" [disabled]="current_user==''&&current_grp==''" class="textarea" [(ngModel)]="textmsg" type="text" placeholder="Type here!"/><div class="emojis"></div>
+        <button [disabled]="current_user==''&&current_grp==''"  class="send" (click)="send(textmsg)" >send</button>
       </div>
       </div>
+</div>
+
+<div *ngIf="popup">
+
+  <input class="namesize" type="text" [(ngModel)]="grpname" required>
+  <div class="size"  >
+    <p *ngFor="let user of users" >
+      <input type="checkbox" value=user (change)="onChange(user, $event.target.checked)" /> 
+      <span style="cursor:pointer;color:aqua" >&#10036;</span>
+        <img class="imgs" style="cursor:pointer" src="https://i.imgur.com/DY6gND0.png" />
+          <span style="cursor:pointer">{{user}}</span>
+        </p>
+</div>
+<div class="button">
+  <button (click)="createGrp()">create</button>
+  <button (click)="popupcreategrp()">close</button><br>
+  <span style="color:red">{{err}}</span>
+</div>
+</div>

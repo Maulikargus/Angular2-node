@@ -14,7 +14,76 @@ html, body {
 body { font-family: sans-serif; }
 
 
+/* hover */
+p.ex2:hover
+{
+    font-size: 150%;
+    background-color:#FFB200;
+}
+
+
+/* scroll */
+[scroll-glue-top],
+[scroll-glue-bottom],
+[scroll-glue]{
+ position:fixed;
+  height: 80%;
+  overflow-y: scroll;
+  border: 1px solid gray;
+}
+
+[scroll-glue-left],
+[scroll-glue-right]{
+  width: 100px;
+  overflow-x: scroll;
+  border: 1px solid gray;
+  padding: 10px;
+}
+
+[scroll-glue-left] span,
+[scroll-glue-right] span{
+  border: 1px solid black;
+}
+
+
+
+
+.lowopacity{
+    opacity:0.3;
+}
+
+.namesize
+{
+    position: absolute;
+    top:10%;
+    left:30%;
+}
+
+
+
+.size{
+position:absolute;
+top:15%;
+left:30%;
+width:300px;  
+height:300px; 
+overflow-y: scroll;
+}
+
+.button{
+    position: absolute;
+    top:60%;
+    left:30%;
+    width:300px;
+    height:100px;
+
+}
+
+
 /* online */
+
+
+
 
 .chat-sidebar
 {
@@ -61,9 +130,19 @@ height: 32px;
 vertical-align:middle;
 }
 
+.imgs
+{
+    width: 32px;
+    height: 32px;
+    vertical-align:middle;  
+}
 
-
-
+.bigimg
+{
+    width: 40px;
+    height: 40px;
+    vertical-align:middle;
+}
 
 
 
@@ -390,6 +469,61 @@ emoji.funny{background-image: url(https://i.imgur.com/qKia58V.png);}
     font-weight: 400;
 }
 
+.label{
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    width: 70%;
+    height: 50px;
+    z-index: 99;
+    background: #4C9B9F;
+    border: none;
+    outline: none;
+    padding-left: 55px;
+    padding-right: 55px;
+    color: #666;
+    font-weight: 1000;
+}
+
+/* */
+#overlay-back { 
+    position   : absolute; 
+    top        : 0; 
+    left       : 0; 
+    width      : 100%; 
+    height     : 100%; 
+    background : #000; 
+    opacity    : 0.6; 
+    filter     : alpha(opacity=60); 
+    z-index    : 5;
+    display    : none;
+} 
+ 
+#overlay { 
+    position : absolute; 
+    top      : 0; 
+    left     : 0; 
+    width    : 100%; 
+    height   : 100%; 
+    z-index  : 10;
+    display  : none;
+} 
+
+
+
+
+
+
+
+
+
+
+.top{
+    position: fixed;
+    top:5px;
+    left:80%;
+}
 
 input.textarea {
     position: fixed;
