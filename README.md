@@ -1,5 +1,5 @@
 # Angular2-node
-Socket-programming in angular-2 and node js
+This is Socket-programming example in angular-2 and node js.
 This is an sample chat app made in angular 2 and node js using websocket socket programming and mongodb database.
 here user can chat with other user who is connected( sidebar at right side shows connected user) and also create chatrooms(groups) and chat with that room.
 
