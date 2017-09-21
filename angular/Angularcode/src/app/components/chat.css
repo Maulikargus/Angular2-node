@@ -474,7 +474,7 @@ emoji.funny{background-image: url(https://i.imgur.com/qKia58V.png);}
     top: 0px;
     left: 0px;
     right: 0px;
-    width: 70%;
+    width: 65%;
     height: 50px;
     z-index: 99;
     background: #4C9B9F;
@@ -522,8 +522,14 @@ emoji.funny{background-image: url(https://i.imgur.com/qKia58V.png);}
 .top{
     position: fixed;
     top:5px;
+    left:75%;
+}
+.topright{
+    position: fixed;
+    top:5px;
     left:80%;
 }
+
 
 input.textarea {
     position: fixed;

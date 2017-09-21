@@ -7,8 +7,9 @@ import { UserComponent }  from './components/user.component';
 import { AboutComponent } from './components/about.component';
 import { routing } from './app.routing'
 
+
 @NgModule({
-  imports:      [ BrowserModule, FormsModule , HttpModule , routing ],
+  imports:      [ BrowserModule, FormsModule , HttpModule , routing],
   declarations: [ AppComponent,UserComponent, AboutComponent ],
   bootstrap:    [ AppComponent ]
 })

@@ -4,7 +4,7 @@ var wss = new WebSocketServer({port: 8080});
 
 var url = "mongodb://localhost:27017/nodedatabase";
 var users = {};
-var token={};
+var token=[];
 var connected_user_names=[];
 
 wss.on('connection', function(connection) {
@@ -57,8 +57,33 @@ wss.on('connection', function(connection) {
       	 	});
       	 	break;
 
+      	 case "logout":
+      	 
+      	 	token.splice(token.indexOf(connection.name));
+      	 	delete users[connection.name];
+      	 	sendTo(connection, { 
+                   	type: "logout",
+                   	success:true
+               	 });
+      	 	connected_user_names.splice(connected_user_names.indexOf(connection.name),1);
+      	 	      for(name in connected_user_names)
+          		 {
+            		console.log("sending to"+connected_user_names[name]);
+            		if(connected_user_names[name]!=connection.name){
+            			var conn=users[connected_user_names[name]];
+            			if(conn != null&&conn.name!=connection.name) {  
+               				sendTo(conn, { 	
+                  				type: "notification", 
+                  				event:"user_left",
+                  				user:connection.name
+            		   		}); 
+            			}
+            		} 
+				} 
 
-			
+
+			break;			
+
          case "login": 
 
          	MongoClient.connect(url, function(err, db) {
@@ -82,11 +107,15 @@ wss.on('connection', function(connection) {
     					    users[data.name] = connection; 
              				connection.name = data.name; 
 			   				connected_user_names.push(connection.name); 
-               			
+
+               				token.push(data.name);
+               				console.log(token);
+
                				sendTo(connection, { 
                   				type: "login", 
                   				success: true ,
                   				name:data.name,
+                  				token:data.name,
                   				connected_user:connected_user_names
                				}); 
 
@@ -122,8 +151,51 @@ wss.on('connection', function(connection) {
 				break;
 
 
+	     case "token":
+	     var currenttoken=data.token;
+
+	     if(token.indexOf(currenttoken)!=-1)
+	     {
+	     	sendTo(connection,{
+	     		type:"tokenauthenticated",
+	     		name:data.token,
+	     		success:true,
+	     		connected_user:connected_user_names
+	     	});
+	     	users[data.token]=connection;
+	     	connection.name=data.token;
+
+	     	connected_user_names.push(data.token);
+	     	          for(name in connected_user_names)
+          					 {
+            					console.log("sending to"+connected_user_names[name]);
+            					if(connected_user_names[name]!=data.token){
+            					var conn=users[connected_user_names[name]];
+            					if(conn != null) {  
+               						sendTo(conn, { 	
+                  						type: "notification", 
+                  						event:"new_user",
+                  						new_connected:connection.name,
+            		   				}); 
+            				}
+            			} 
+					}
+
+
+
+
+
+	     }
+	     else{
+	     	sendTo(connection,{
+	     		type:"tokenauthenticated",
+	     		success:false
+	     	});
+	     }
+
     			
-				
+		 break;
+
          case "send": 
          
 				var date = new Date();

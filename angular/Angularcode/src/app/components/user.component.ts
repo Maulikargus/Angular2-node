@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 @Component({
     moduleId:module.id,
@@ -6,7 +6,7 @@ import { Component } from '@angular/core';
   templateUrl:'user.component.html',
 })
  
-export class UserComponent  { 
+export class UserComponent   { 
     register:boolean=false;
     login:boolean=true;
     ws:any;
@@ -30,11 +30,25 @@ export class UserComponent  {
     Groups:group[]=[];
     grpname:string="";
     current_grp="";
+    localstorage:Storage;
+
     constructor() {
       this.ws = new WebSocket('ws://192.1.125.44:8080');
       var temps=this;
       this.ws.onmessage = function(e: MessageEvent) {
-          console.log("data aavyo"+e.data);
+          console.log("data aavyo"+e.data);        
+          if(e.data=="Hello world"){
+            console.log("sending token");
+          temps.localstorage=window.localStorage;
+          if(temps.localstorage.getItem("token")!='')
+            {
+              temps.ws.send(JSON.stringify({
+                "type":"token",
+                "token":temps.localstorage.getItem("token")
+              }));
+            }
+          }
+
           try{
           var temp=JSON.parse(e.data);
           if(temp.type=='fetching')
@@ -65,7 +79,9 @@ export class UserComponent  {
                  }
                  temps.to.set(temps.current_user,tempmessage); 
                 }
-          
+
+
+
           else if(temp.type=='status')
             {
               if(temp.status='connected')
@@ -99,6 +115,29 @@ export class UserComponent  {
                       temps.error=temp.error;
                     }
              }
+             else if(temp.type=='logout')
+              {
+                temps.show=true;
+                temps.loggedin=false;
+                temps.name="";
+              }
+
+          else if(temp.type=="tokenauthenticated")
+            {
+              if(temp.success)
+                {
+                  console.log("redirecting to home page");
+                  temps.show=false;
+                  temps.loggedin=true;
+                  temps.name=temp.name;
+                  for(var i=0;i<temp.connected_user.length;i++)
+                    {  
+                      console.log(temp.connected_user[i]);
+                      if(temps.name!=temp.connected_user[i])
+                        temps.users.push(temp.connected_user[i]);
+                    }
+                }
+            }
           
           else if(temp.type=="grpcreated")
             {
@@ -180,17 +219,36 @@ export class UserComponent  {
                     }
                   else if(temp.event=="user_left")
                     {
+
                       console.log("deleting user "+temp.user);
                       temps.users.splice(temps.users.indexOf(temp.user),1);
+                      if(temp.user==temps.current_user){
+                        temps.messages.splice(0,temps.messages.length)
+                      }
+                      temps.current_user="";
+                      temps.src="https://upload.wikimedia.org/wikipedia/commons/4/47/PNG_transparency_demonstration_1.png";
                     }
               }
 
             }catch(e)
             {
-              console.log(""+e);
+
+
             }
         };
      }
+
+
+
+    logout()
+    {
+      console.log("logout");
+      this.ws.send(JSON.stringify({"type":"logout"}));
+
+          this.users.splice(0,this.users.length+1);
+          console.log("splicing");
+    }
+
     loginfun(name:string,password:string)
     {
       console.log("login thava aavyu");
