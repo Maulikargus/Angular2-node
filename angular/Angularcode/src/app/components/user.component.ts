@@ -36,7 +36,6 @@ export class UserComponent   {
       this.ws = new WebSocket('ws://192.1.125.44:8080');
       var temps=this;
       this.ws.onmessage = function(e: MessageEvent) {
-          console.log("data aavyo"+e.data);        
           if(e.data=="Hello world"){
             console.log("sending token");
           temps.localstorage=window.localStorage;
@@ -53,7 +52,6 @@ export class UserComponent   {
           var temp=JSON.parse(e.data);
           if(temp.type=='fetching')
             {
-              console.log("aave to che");
               temps.messages=[];
               if(!temps.to.get(temps.current_user))
                 {
@@ -105,7 +103,7 @@ export class UserComponent   {
                   temps.name=temp.name;
                   for(var i=0;i<temp.connected_user.length;i++)
                     {  
-                      console.log(temp.connected_user[i]);
+                      console.log("connected users"+temp.connected_user[i]);
                       if(temps.name!=temp.connected_user[i])
                         temps.users.push(temp.connected_user[i]);
                     }
@@ -132,7 +130,6 @@ export class UserComponent   {
                   temps.name=temp.name;
                   for(var i=0;i<temp.connected_user.length;i++)
                     {  
-                      console.log(temp.connected_user[i]);
                       if(temps.name!=temp.connected_user[i])
                         temps.users.push(temp.connected_user[i]);
                     }
@@ -186,8 +183,6 @@ export class UserComponent   {
 
             else if(temp.type=="message")
               {
-                console.log(temp.message);
-                console.log("lage che ahiya error aave che");
                 if(!temps.to.get(temp.from))
                   {
                     this.to.set(this.from,[]);
@@ -215,12 +210,9 @@ export class UserComponent   {
                     {
                       console.log("pushing"+ temp.new_connected);
                       temps.users.push(temp.new_connected);
-                      console.log(temps.users); 
                     }
                   else if(temp.event=="user_left")
                     {
-
-                      console.log("deleting user "+temp.user);
                       temps.users.splice(temps.users.indexOf(temp.user),1);
                       if(temp.user==temps.current_user){
                         temps.messages.splice(0,temps.messages.length)
@@ -263,7 +255,6 @@ export class UserComponent   {
     registerfun(name:string,password:string)
     {
 
-      console.log("register thava aavyu");
       var logindata={
         "type":"signup",
         "name":name,
@@ -323,12 +314,10 @@ export class UserComponent   {
 
      popupcreategrp()
      {
-       console.log("chalo hale che");
         if(this.popup)
           this.popup=false;
         else
           this.popup=true;
-        console.log(this.popup);
         // this.loggedin=!this.loggedin;
       }
 
@@ -346,7 +335,6 @@ export class UserComponent   {
 
      createGrp()
      {
-      console.log("group create thay che");
       console.log(this.Groups);
       if(this.grp.length>0)
         { 
@@ -419,7 +407,6 @@ export class UserComponent   {
           {
             member=this.Groups[a].members;
             var message=this.Groups[a].messages;
-           console.log("push thyo che");
             message.push({
             from:this.name,
             message:this.textmsg,

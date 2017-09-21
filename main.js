@@ -232,10 +232,10 @@ wss.on('connection', function(connection) {
                	 db.collection('messages').update({_id: messagename}, { $push: { 'messages': {'name':connection.name,'message':data.message,'time':times} } }, 
             		function(err, added) {
       			if( err || !added ) {
-        			console.log("Track not added.");
+        			console.log("not added.");
       				}
       			else {
-        			console.log("Track added to party with id: ");
+        			console.log("added ");
             		var conn=users[name];
             		sendTo(conn,{
             			type:"message",
