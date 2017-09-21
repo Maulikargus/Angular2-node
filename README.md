@@ -6,5 +6,6 @@ here user can chat with other user who is connected( sidebar at right side shows
 
 # How to run the app
 user first need to run main.js file using command "node main" (User need to download required libraries for which user need to learn command "npm insall" as the required library is mentioned in package.json)
+user need to create mongodb installed in his/her system and can make database according to main.js file or can make database and change main.js file accordingly.
 then user need to start angular app using "npm start" command in angular-code folder ( user need to install required libraries for which user needs to run again "npm install" command in that folder)
 Then user can singup and then login.
