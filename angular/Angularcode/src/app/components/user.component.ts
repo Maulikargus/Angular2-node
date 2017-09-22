@@ -34,192 +34,192 @@ export class UserComponent   {
 
     constructor() {
       this.ws = new WebSocket('ws://192.1.125.44:8080');
-      var temps=this;
+      var scope=this;
       this.ws.onmessage = function(e: MessageEvent) {
           if(e.data=="Hello world"){
             console.log("sending token");
-          temps.localstorage=window.localStorage;
-          if(temps.localstorage.getItem("token")!='')
+          scope.localstorage=window.localStorage;
+          if(scope.localstorage.getItem("token")!='')
             {
-              temps.ws.send(JSON.stringify({
+              scope.ws.send(JSON.stringify({
                 "type":"token",
-                "token":temps.localstorage.getItem("token")
+                "token":scope.localstorage.getItem("token")
               }));
             }
           }
 
           try{
-          var temp=JSON.parse(e.data);
-          if(temp.type=='fetching')
+          var received_data=JSON.parse(e.data);
+          if(received_data.type=='fetching')
             {
-              temps.messages=[];
-              if(!temps.to.get(temps.current_user))
+              scope.messages=[];
+              if(!scope.to.get(scope.current_user))
                 {
-                  temps.to.set(temps.current_user,[]);
+                  scope.to.set(scope.current_user,[]);
                 }
             
-                var tempmessage=temps.to.get(temps.current_user);
+                var tempmessage=scope.to.get(scope.current_user);
 
-              for(i=0;i<temp.data.length;i++)
+              for(i=0;i<received_data.data.length;i++)
                 {
-                  var tempmsg=temp.data[i];
+                  var tempmsg=received_data.data[i];
 
                   tempmessage.push({
                     "from":tempmsg.name,
                     "message":tempmsg.message,
                     "time":tempmsg.time
                   });
-                  temps.messages.push({
+                  scope.messages.push({
                     "from":tempmsg.name,
                     "message":tempmsg.message,
                     "time":tempmsg.time  
                   });
                  }
-                 temps.to.set(temps.current_user,tempmessage); 
+                 scope.to.set(scope.current_user,tempmessage); 
                 }
 
 
 
-          else if(temp.type=='status')
+          else if(received_data.type=='status')
             {
-              if(temp.status='connected')
+              if(received_data.status='connected')
                 {
-                  temps.loggedin=true;
+                  scope.loggedin=true;
                 }
                 else{
-                  temps.loggedin=false;
+                  scope.loggedin=false;
                 }
             } 
-            else if(temp.type==''){
+            else if(received_data.type==''){
 
             }
           
-          else if(temp.type=='login')
+          else if(received_data.type=='login')
              {
-               if(temp.success)
+               if(received_data.success)
                  {
-                  temps.show=false;
-                  temps.loggedin=true;
-                  temps.name=temp.name;
-                  for(var i=0;i<temp.connected_user.length;i++)
+                  scope.show=false;
+                  scope.loggedin=true;
+                  scope.name=received_data.name;
+                  for(var i=0;i<received_data.connected_user.length;i++)
                     {  
-                      console.log("connected users"+temp.connected_user[i]);
-                      if(temps.name!=temp.connected_user[i])
-                        temps.users.push(temp.connected_user[i]);
+                      console.log("connected users"+received_data.connected_user[i]);
+                      if(scope.name!=received_data.connected_user[i])
+                        scope.users.push(received_data.connected_user[i]);
                     }
-                    temps.localstorage.setItem("token",temps.name);
+                    scope.localstorage.setItem("token",scope.name);
                   }
                   else
                     {
-                      temps.error=temp.error;
+                      scope.error=received_data.error;
                     }
              }
-             else if(temp.type=='logout')
+             else if(received_data.type=='logout')
               {
-                temps.show=true;
-                temps.loggedin=false;
-                temps.name="";
+                scope.show=true;
+                scope.loggedin=false;
+                scope.name="";
               }
 
-          else if(temp.type=="tokenauthenticated")
+          else if(received_data.type=="tokenauthenticated")
             {
-              if(temp.success)
+              if(received_data.success)
                 {
                   console.log("redirecting to home page");
-                  temps.show=false;
-                  temps.loggedin=true;
-                  temps.name=temp.name;
-                  for(var i=0;i<temp.connected_user.length;i++)
+                  scope.show=false;
+                  scope.loggedin=true;
+                  scope.name=received_data.name;
+                  for(var i=0;i<received_data.connected_user.length;i++)
                     {  
-                      if(temps.name!=temp.connected_user[i])
-                        temps.users.push(temp.connected_user[i]);
+                      if(scope.name!=received_data.connected_user[i])
+                        scope.users.push(received_data.connected_user[i]);
                     }
                 }
             }
           
-          else if(temp.type=="grpcreated")
+          else if(received_data.type=="grpcreated")
             {
-              temps.Groups.push(
+              scope.Groups.push(
                 {
-                  name:temp.name,
-                  members:temp.member,
+                  name:received_data.name,
+                  members:received_data.member,
                   messages:[]
                 }
               );
             }
 
-          else if(temp.type=="grpmessage")
+          else if(received_data.type=="grpmessage")
             {
-              if(temp.grp==temps.current_grp)
+              if(received_data.grp==scope.current_grp)
                 {
-                  temps.messages.push({
-                    from:temp.form,
-                    message:temp.message,
-                    time:temp.time
+                  scope.messages.push({
+                    from:received_data.form,
+                    message:received_data.message,
+                    time:received_data.time
                   });
                 }
-              for(var i=0;i<temps.Groups.length;i++)
+              for(var i=0;i<scope.Groups.length;i++)
                 {
-                  if(temps.Groups[i].name==temp.grp)
+                  if(scope.Groups[i].name==received_data.grp)
                     {
-                      var tempmessages= temps.Groups[i].messages;
+                      var tempmessages= scope.Groups[i].messages;
                       tempmessages.push({
-                        from:temp.from,
-                        message:temp.message,
-                        time:temp.time
+                        from:received_data.from,
+                        message:received_data.message,
+                        time:received_data.time
                       });
-                      temps.Groups[i].messages=tempmessages;
+                      scope.Groups[i].messages=tempmessages;
                     }
                     break;
                 }
             }
 
-            else if(temp.type=="signup")
+            else if(received_data.type=="signup")
               {
-                if(!temp.succees)
+                if(!received_data.succees)
                   {
-                    temps.error=temp.error;
+                    scope.error=received_data.error;
                   }
               }
 
-            else if(temp.type=="message")
+            else if(received_data.type=="message")
               {
-                if(!temps.to.get(temp.from))
+                if(!scope.to.get(received_data.from))
                   {
                     this.to.set(this.from,[]);
                   }
-                  var tempmessages=temps.to.get(temp.from);
+                  var tempmessages=scope.to.get(received_data.from);
                 
                 
                 tempmessages.push({
-                  "from":temp.from,
-                  "message":temp.message,
-                  "time":temp.time
+                  "from":received_data.from,
+                  "message":received_data.message,
+                  "time":received_data.time
                 });
-                if(temps.current_user==temp.from)
-                temps.messages.push({
-                  "from":temp.from,
-                  "message":temp.message,
-                  "time":temp.time
+                if(scope.current_user==received_data.from)
+                scope.messages.push({
+                  "from":received_data.from,
+                  "message":received_data.message,
+                  "time":received_data.time
                 });
-                temps.to.set(temp.from,tempmessages);
+                scope.to.set(received_data.from,tempmessages);
               }
 
-            else if(temp.type=="notification")
+            else if(received_data.type=="notification")
               {
-                  if(temp.event=="new_user")
+                  if(received_data.event=="new_user")
                     {
-                      console.log("pushing"+ temp.new_connected);
-                      temps.users.push(temp.new_connected);
+                      console.log("pushing"+ received_data.new_connected);
+                      scope.users.push(received_data.new_connected);
                     }
-                  else if(temp.event=="user_left")
+                  else if(received_data.event=="user_left")
                     {
-                      temps.users.splice(temps.users.indexOf(temp.user),1);
-                      if(temp.user==temps.current_user){
-                        temps.messages.splice(0,temps.messages.length)
+                      scope.users.splice(scope.users.indexOf(received_data.user),1);
+                      if(received_data.user==scope.current_user){
+                        scope.messages.splice(0,scope.messages.length)
                       }
-                      temps.current_user="";
-                      temps.src="https://upload.wikimedia.org/wikipedia/commons/4/47/PNG_transparency_demonstration_1.png";
+                      scope.current_user="";
+                      scope.src="https://upload.wikimedia.org/wikipedia/commons/4/47/PNG_transparency_demonstration_1.png";
                     }
               }
 
