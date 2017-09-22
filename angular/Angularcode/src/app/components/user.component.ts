@@ -107,6 +107,7 @@ export class UserComponent   {
                       if(temps.name!=temp.connected_user[i])
                         temps.users.push(temp.connected_user[i]);
                     }
+                    temps.localstorage.setItem("token",temps.name);
                   }
                   else
                     {

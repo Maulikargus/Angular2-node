@@ -152,6 +152,7 @@ wss.on('connection', function(connection) {
 
 
 	     case "token":
+	     console.log("token received"+data.token);
 	     var currenttoken=data.token;
 
 	     if(token.indexOf(currenttoken)!=-1)
